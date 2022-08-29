@@ -2,25 +2,24 @@ const express = require('express');
 const res = require('express/lib/response');
 const ProductsService= require('./../services/product.service');
 const validatorHandlers= require('./../middlewares/validator.handler');
-const {createProductSchema,updateProductSchema,getProductSchema}= require('./../schemas/product.schemas');
+const {createProductSchema,updateProductSchema,getProductSchema,queryProductSchema}= require('./../schemas/product.schemas');
 
 //const faker= require('faker');
 //const Faker = require('faker/lib');
 const router= express.Router();
 const service= new ProductsService();
 
-router.get('/', async(req,res) => {
-  const products=await service.find();
-
-  res.json(products)
-})
-
-router.get('/filter',(req,res) => {
-  res.send('Esto es un filtro')
-
-
-});
-
+router.get('/',
+  validatorHandlers(queryProductSchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const products = await service.find(req.query);
+      res.json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 router.get('/:id',
 validatorHandlers(getProductSchema,'params'),
 async(req,res,next) => {

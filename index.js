@@ -5,7 +5,7 @@ const routerApi= require('./routes');
 //const router = require('./routes/users.routers');
 //const faker= require('faker');
 //const Faker = require('faker/lib');
-const {logErrors, errorHandlers,boomerrorHandlers}= require('./middlewares/error.handler')
+const {logErrors, errorHandlers,boomerrorHandlers, ormerrorHandler}= require('./middlewares/error.handler')
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -37,6 +37,7 @@ app.get('/nueva-ruta', (req,res) => {
 routerApi(app);
 
 app.use(logErrors);
+app.use(ormerrorHandler)
 app.use(boomerrorHandlers);
 app.use(errorHandlers);
 
